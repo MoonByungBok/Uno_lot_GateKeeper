@@ -1,9 +1,3 @@
-/*
-  blue test: 
-  http://www.kccistc.net/
-  작성일 : 2022.12.19
-  작성자 : IoT 임베디드 KSH
-*/
 #include <SoftwareSerial.h>
 #include <Wire.h>
 #include <DHT.h>
@@ -11,7 +5,6 @@
 #include <LiquidCrystal_I2C.h>
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
-//추가한거
 //서보모터
 #include <Servo.h>  // 서보 라이브러리
 //RC522 모듈
@@ -20,7 +13,6 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 #define DEBUG
 
-//내가 추가한거
 //초음파 거리 센서
 #define TRIGGER_PIN 3     // 초음파 센서의 트리거 핀(초음파 보내는 핀)
 #define ECHO_PIN 2        // 초음파 센서의 에코 핀(초음파 받는 핀)
@@ -56,7 +48,6 @@ bool timerIsrFlag = false;
 unsigned int secCount;
 SoftwareSerial BTSerial(8, 7);  // TX, RX
 
-//추가한거
 //초음파 거리센서
 float duration, distance;
 bool distanceFlag = false;
@@ -79,7 +70,6 @@ void setup() {
   lcdDisplay(0, 0, lcdLine1);
   lcdDisplay(0, 1, lcdLine2);
 
-  //추가한거
   //초음파 거리센서
   pinMode(TRIGGER_PIN, OUTPUT);
   pinMode(ECHO_PIN, INPUT);
@@ -132,14 +122,12 @@ void restartRFIDRecognition() {
   rfid.uid.uidByte[1] != PICC_1 || 
   rfid.uid.uidByte[2] != PICC_2 || 
   rfid.uid.uidByte[3] != PICC_3) {
-    //rfidFlag = false;
     Serial.println("false");
     analogWrite(RED, 255);
     analogWrite(GREEN, 0);
     sprintf(sendBuf,"[LJH_UBU]RFID@FAIL\n"); 
     BTSerial.write(sendBuf, strlen(sendBuf));
   } else {
-    //rfidFlag = true;
     Serial.println("true");
     analogWrite(GREEN, 255);
     analogWrite(RED, 0);
@@ -149,25 +137,7 @@ void restartRFIDRecognition() {
   
   // Halt PICC
   rfid.PICC_HaltA();
-  // Stop encryption on PCD
   rfid.PCD_StopCrypto1();
-  //carPassFail(rfidFlag);
-  /*
-  rfid.PICC_HaltA();      // 이전 카드 세션 종료
-  rfid.PCD_Init();        // 리더 초기화
-  
-  if (rfid.PICC_IsNewCardPresent()) {
-    if (rfid.PICC_ReadCardSerial()) {
-      if (rfid.uid.uidByte[0] == PICC_0 && rfid.uid.uidByte[1] == PICC_1 && rfid.uid.uidByte[2] == PICC_2 && rfid.uid.uidByte[3] == PICC_3) {
-        rfidFlag = true;
-      } else {
-        rfidFlag = false;
-      }
-      carPassFail(rfidFlag);
-      rfid.PICC_HaltA();      // 새로운 카드 세션 종료
-    }
-  }
-  */
 }
 
 
@@ -228,11 +198,6 @@ void bluetoothEvent() {
       break;
     pToken = strtok(NULL, "[@]");
   }
-  //recvBuf : [XXX_BTM]LED@ON
-  //pArray[0] = "XXX_LIN"   : 송신자 ID
-  //pArray[1] = "LED"
-  //pArray[2] = "ON"
-  //pArray[3] = 0x0
   if ((strlen(pArray[1]) + strlen(pArray[2])) < 16) {
     sprintf(lcdLine2, "%s %s", pArray[1], pArray[2]);
     lcdDisplay(0, 1, lcdLine2);

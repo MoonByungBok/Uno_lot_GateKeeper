@@ -1,3 +1,4 @@
+//블루투스
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -80,7 +81,6 @@ int main(int argc, char *argv[])
 	pthread_create(&snd_thread, NULL, send_msg, (void *)&dev_fd);
 
 	pthread_join(snd_thread, &thread_return);
-	//	pthread_join(rcv_thread, &thread_return);
 
 	close(dev_fd.sockfd);
 	return 0;
@@ -101,15 +101,12 @@ void * send_msg(void * arg)  //bluetooth --> server
 	FD_SET(dev_fd->sockfd, &initset);
 	FD_SET(dev_fd->btfd, &initset);
 
-	//	fputs("Input a message! [ID]msg (Default ID:ALLMSG)\n",stdout);
 	while(1) {
-		//		memset(msg,0,sizeof(msg));
-		//		name_msg[0] = '\0';
 		tv.tv_sec = 1;
 		tv.tv_usec = 0;
 		newset = initset;
 		ret = select(dev_fd->btfd + 1, &newset, NULL, NULL, &tv);
-		//        if(FD_ISSET(STDIN_FILENO, &newset))
+
 		if(FD_ISSET(dev_fd->btfd, &newset))
 		{
 			ret=read(dev_fd->btfd, msg+total,BUF_SIZE-total);
@@ -130,7 +127,6 @@ void * send_msg(void * arg)  //bluetooth --> server
 			else
 				continue;
 
-//			sprintf(name_msg,"[%s]%s",dev_fd->sendid,msg);
   			fputs("ARD:",stdout);
 			fputs(msg,stdout);
 			if(write(dev_fd->sockfd, msg, strlen(msg))<=0)
@@ -167,27 +163,8 @@ void * recv_msg(void * arg)  //server --> bluetooth
 		name_msg[str_len] = 0;
   		fputs("SRV:",stdout);
 		fputs(name_msg, stdout);
-/*
-		pToken = strtok(name_msg,"[:]");
-		i = 0;
-		while(pToken != NULL)
-		{
-			pArray[i] =  pToken;
-			if(i++ >= ARR_CNT)
-				break;
-			pToken = strtok(NULL,"[:]");
-		}
-		if(!strncmp(pArray[1]," New conn",4) || !strncmp(pArray[1]," Already",4) || !strncmp(pArray[1]," Authent",4)) 
-			continue;
 
-  		strcpy(dev_fd->sendid,pArray[0]);
-		write(dev_fd->btfd,pArray[1],strlen(pArray[1]));   
-*/
 		write(dev_fd->btfd,name_msg,strlen(name_msg));   
-		/* 
-		//		printf("id:%s, msg:%s,%s,%s,%s\n",pArray[0],pArray[1],pArray[2],pArray[3],pArray[4]);
-		printf("id:%s, msg:%s\n",pArray[0],pArray[1]);
-		*/
 	}
 }
 

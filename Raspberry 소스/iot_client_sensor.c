@@ -1,3 +1,4 @@
+//DB
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -154,22 +155,12 @@ void* recv_msg(void* arg)
 		i = 0;
 		while (pToken != NULL)
 		{
-		//	printf("%d\n",i);
 			pArray[i] = pToken;
 			if ( ++i >= ARR_CNT)
 				break;
 			pToken = strtok(NULL, "[:@]");
 
 		}
-		/*i=0;
-		while (pToken != NULL)
-		{
-			pArr[i] = pToken;
-			if (++i >= ARR_CNT)
-				break;
-			pToken = strtok(NULL, "[:@]");
-		}
-		*/
 		printf("%s",pArray[1]);
 		if(!strcmp(pArray[1],"SENSOR\n")){
 			printf("insert\n");

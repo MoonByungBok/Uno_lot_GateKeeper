@@ -1,9 +1,4 @@
-/*
-  WiFiEsp test: ClientTest
-  http://www.kccistc.net/
-  작성일 : 2022.12.19
-  작성자 : IoT 임베디드 KSH
-*/
+
 #define DEBUG
 //#define DEBUG_WIFI
 
@@ -90,12 +85,10 @@ void close() {
   for (int i = 0; i < 3; i++) {
     if (i == 0) {
       tone(pinBUZZER, 523);
-      // noTone(pinBUZZER);
       delay(300);
     } else if (i == 1) {
       tone(pinBUZZER, 349);
       delay(300);
-      // noTone(pinBUZZER);
     } else if (i == 2) {
       tone(pinBUZZER, 262);
       delay(300);
@@ -112,12 +105,10 @@ void accept() {
   for (int i = 0; i < 3; i++) {
     if (i == 0) {
       tone(pinBUZZER, 262);
-      // noTone(pinBUZZER);
       delay(300);
     } else if (i == 1) {
       tone(pinBUZZER, 349);
       delay(300);
-      // noTone(pinBUZZER);
     } else if (i == 2) {
       tone(pinBUZZER, 523);
       delay(300);
@@ -216,7 +207,7 @@ void socketEvent()
       break;
     pToken = strtok(NULL, "[@]");
   }
-  //[KSH_ARD]LED@ON : pArray[0] = "KSH_ARD", pArray[1] = "LED", pArray[2] = "ON"
+
   if ((strlen(pArray[1]) + strlen(pArray[2])) < 16)
   {
     sprintf(lcdLine2, "%s %s", pArray[1], pArray[2]);
@@ -248,16 +239,12 @@ void socketEvent()
       strcpy(lcdLine2, "Card check");
       lcdDisplay(0, 1, lcdLine2);
       accept();
-      //sprintf(sendBuf, "[%s]%s@%s\n", pArray[0], pArray[1], pArray[2]);
-      //Serial.println(sendBuf);
     }
     else if(!strcmp(pArray[2], "FAIL")) // 통과 실패
     {
       strcpy(lcdLine2, "Card not check");
       lcdDisplay(0, 1, lcdLine2);
       close();
-      //sprintf(sendBuf, "[%s]%s@%s\n", pArray[0], pArray[1], pArray[2]);
-      //Serial.println(sendBuf);
     }
     return;
   }
